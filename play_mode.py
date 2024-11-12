@@ -23,6 +23,8 @@ def handle_events():
 
 def init():
     global boy
+    global balls
+    global zombies
 
     grass = Grass()
     game_world.add_object(grass, 0)
@@ -30,9 +32,20 @@ def init():
     boy = Boy()
     game_world.add_object(boy, 1)
 
-    # fill here
+    balls = [Ball(random.randint(100,1600 - 100), 60, 0)for _ in range(30)]
+    game_world.add_objects(balls, 1)
 
+    zombies = [Zombie() for _ in range(5)]
+    game_world.add_objects(zombies, 1)
 
+    game_world.add_collision_pair('boy:ball', boy, None)
+    for ball in balls:
+        game_world.add_collision_pair('boy:ball', None, ball)
+
+    game_world.add_collision_pair('boy:zombie', boy, None)
+    for zombie in zombies:
+        game_world.add_collision_pair('boy:zombie', None, zombie)
+        game_world.add_collision_pair('zombie:ball', zombie, None)
 
 
 def finish():
@@ -42,8 +55,7 @@ def finish():
 
 def update():
     game_world.update()
-    # fill here
-
+    game_world.handle_collisions()
 
 def draw():
     clear_canvas()
